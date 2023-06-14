@@ -22,7 +22,7 @@ export default async function register(app) {
     version: pkg.version,
     i18n,
     collections: {
-      SubOrders: {
+      Payments: {
         name: "Payments",
         indexes: [
           // Create indexes. We set specific names for backwards compatibility
@@ -42,7 +42,7 @@ export default async function register(app) {
     },
     graphQL: {
       // resolvers,
-      schemas
+      // schemas
     },
     // mutations,
     // queries,
