@@ -1,5 +1,5 @@
 {
-  "name": "@umerjaved1/api-plugin-payouts",
+  "name": "@codistan-isb/api-plugin-payouts",
   "description": "Orders plugin for the Reaction API",
   "version": "1.0.1-development",
   "main": "index.js",
