@@ -34,20 +34,20 @@ async function createPayment(context, order,itemId, sellerId, status) {
         const payoutPrice=totalPrice-comission;
         console.log("totalPrice",totalPrice)
         console.log("payoutPrice",payoutPrice)
-        const PaymentObj={
+        const PaymentObj = {
           _id: Random.id(),
           totalPrice,
-          fee:comission,
-          amount:payoutPrice,
-          itemId:item._id,
-          productId:item.productId,
-          sellerId:sellerId,
-          status:"new",
-          workflow:["new"],
-          orderId:order._id,
-          subOrderId:SubOrderExist._id,
-          createdAt:new Date().toUTCString(),
-          updatedAt:new Date().toUTCString(),
+          fee: comission,
+          amount: payoutPrice,
+          itemId: item._id,
+          productId: item.productId,
+          sellerId: sellerId,
+          status: "created",
+          workflow: ["created"],
+          orderId: order._id,
+          subOrderId: SubOrderExist._id,
+          createdAt: new Date().toUTCString(),
+          updatedAt: new Date().toUTCString(),
         };
 
         await Payments.insertOne(PaymentObj);
