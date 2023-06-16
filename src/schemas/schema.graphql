@@ -1,4 +1,4 @@
-type getAllPayments implements Node {
+type getAllPaymentsPayload implements Node {
   _id: ID!
   totalPrice: Float
   fee: Float
@@ -8,7 +8,7 @@ type getAllPayments implements Node {
   orderId: ID
   subOrderId: ID
   sellerId: ID
-  workflow: Workflow
+   workflow: [String]
   status: PaymentStatus!
   createdAt: String
   updatedAt: String
@@ -19,12 +19,12 @@ type Payment {
   referenceNumber: String
   reason: String
   status: PaymentStatus!
-  workflow: [String!]!
+  workflow: [String]
 }
 
-type Workflow {
-  items: [OrderItem!]!
-}
+# type Workflow {
+#   items: [OrderItem!]!
+# }
 
 enum PaymentStatus {
   adjustments
@@ -45,7 +45,7 @@ type getAllPaymentsConnection {
   You can request the `nodes` directly to avoid the extra wrapping that `NodeEdge` has,
   if you know you will not need to paginate the results.
   """
-  nodes: [getAllPayments]
+  nodes: [getAllPaymentsPayload]
   "Information to help a client request the next or previous page"
   pageInfo: PageInfo!
   "The total number of nodes that match your query"
@@ -56,7 +56,7 @@ type getAllPaymentsEdge implements NodeEdge {
   "The cursor that represents this node in the paginated results"
   cursor: ConnectionCursor!
   "The Transaction"
-  node: getAllPayments
+  node: getAllPaymentsPayload
 }
 
 extend type Query {
@@ -84,7 +84,7 @@ extend type Query {
 
 extend type Mutation {
   updatePaymentStatus(
-     _id: ID!
+    _id: ID!
     referenceNumber: Int
     reason: String
     status: PaymentStatus
