@@ -1,14 +1,10 @@
 import pkg from "../package.json";
 import i18n from "./i18n/index.js";
-import mutations from "./mutations/index.js";
-import policies from "./policies.json";
-import preStartup from "./preStartup.js";
 import queries from "./queries/index.js";
 import resolvers from "./resolvers/index.js";
 import schemas from "./schemas/index.js";
-import { Order, OrderFulfillmentGroup, OrderItem } from "./simpleSchemas.js";
+
 import startup from "./startup.js";
-import getDataForOrderEmail from "./util/getDataForOrderEmail.js";
 
 /**
  * @summary Import and call this function to add this plugin to your API.
@@ -41,11 +37,11 @@ export default async function register(app) {
       startup: [startup]
     },
     graphQL: {
-      // resolvers,
-      // schemas
+      resolvers,
+      schemas
     },
     // mutations,
-    // queries,
+    queries,
     // policies,
     // simpleSchemas: {
     //   Order,
