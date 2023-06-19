@@ -12,6 +12,17 @@ type Payout implements Node {
   status: PaymentStatus!
   createdAt: String
   updatedAt: String
+  sellerInfo:sellerInfo
+  productInfo:productInfo
+}
+type productInfo{
+  _id:ID
+  title:String
+}
+type sellerInfo{
+  _id:ID
+  name:String
+  accountdetails:[bankDetailsPayload]
 }
 
 type Payment {
@@ -19,7 +30,7 @@ type Payment {
   referenceNumber: String
   reason: String
   status: PaymentStatus!
-  workflow: [String!]!
+  workflow: [String]
 }
 
 
@@ -81,7 +92,7 @@ extend type Query {
 
 extend type Mutation {
   updatePaymentStatus(
-     _id: ID!
+    _id: ID!
     referenceNumber: Int
     reason: String
     status: PaymentStatus

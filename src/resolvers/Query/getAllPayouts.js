@@ -1,9 +1,13 @@
 import getPaginatedResponse from "@reactioncommerce/api-utils/graphql/getPaginatedResponse.js";
 import wasFieldRequested from "@reactioncommerce/api-utils/graphql/wasFieldRequested.js";
+import ReactionError from "@reactioncommerce/reaction-error";
 export default async function getAllPayouts(parnet, args, context, info) {
   const { collections } = context;
   const { Payments } = collections;
   const { orderId, sellerId, status, ...connectionArgs } = args;
+   if (!context.user) {
+     throw new ReactionError("access-denied", "Access Denied");
+   }
   const selector ={}
    if (orderId) {
      selector["orderId"] = orderId;
