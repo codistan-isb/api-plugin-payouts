@@ -8,6 +8,7 @@ type getAllPaymentsPayload implements Node {
   orderId: ID
   subOrderId: ID
   sellerId: ID
+  workflow: [String!]!
    workflow: [String]
   status: PaymentStatus!
   createdAt: String
@@ -60,7 +61,7 @@ type getAllPaymentsEdge implements NodeEdge {
 }
 
 extend type Query {
-  getAllPaymentsQuery(
+  getAllPayouts(
     sellerId: ID
     status: PaymentStatus
     orderId: ID
