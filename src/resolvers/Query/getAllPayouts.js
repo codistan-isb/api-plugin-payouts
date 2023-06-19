@@ -1,6 +1,6 @@
 import getPaginatedResponse from "@reactioncommerce/api-utils/graphql/getPaginatedResponse.js";
 import wasFieldRequested from "@reactioncommerce/api-utils/graphql/wasFieldRequested.js";
-export default async function getAllPaymentsQuery(parnet, args, context, info) {
+export default async function getAllPayouts(parnet, args, context, info) {
   const { collections } = context;
   const { Payments } = collections;
   const { orderId, sellerId, status, ...connectionArgs } = args;
