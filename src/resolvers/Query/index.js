@@ -5,12 +5,12 @@ import ordersByAccountId from "./ordersByAccountId.js";
 import refunds from "./refunds.js";
 import refundsByPaymentId from "./refundsByPaymentId.js";
 import getOrderShippingByAddress from "./getOrderShippingByAddress.js";
-import getAllPaymentsQuery from "./getAllPaymentsQuery.js";
+import getAllPayouts from "./getAllPayouts.js";
 export default {
   orderById,
   orderByReferenceId,
   orders,
-  getAllPaymentsQuery,
+  getAllPayouts,
   ordersByAccountId,
   refunds,
   refundsByPaymentId,
