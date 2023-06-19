@@ -12,6 +12,17 @@ type Payout implements Node {
   status: PaymentStatus!
   createdAt: String
   updatedAt: String
+  sellerInfo:sellerInfo
+  productInfo:productInfo
+}
+type productInfo{
+  _id:ID
+  title:String
+}
+type sellerInfo{
+  _id:ID
+  name:String
+  accountdetails:[bankDetailsPayload]
 }
 
 type Payment {
