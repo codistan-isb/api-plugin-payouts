@@ -1,40 +1,42 @@
+import ReactionError from "@reactioncommerce/reaction-error";
 export default async function updatePaymentStatus(
   parent,
   { _id, referenceNumber, reason, status },
   context
 ) {
+     if (!context.user) {
+       throw new ReactionError("access-denied", "Access Denied");
+     }
   const { collections } = context;
   const { Payments } = collections;
 
-  // console.log(_id, status, "new");
   let payment = await Payments.findOne({ _id });
 
   if (!payment) {
     throw new Error("Payment not found");
   }
-if (status === "paid") {
-  if (referenceNumber) {
+
+  if (status === "paid") {
+    if (!referenceNumber) {
+      throw new Error("Reference number is required for paid status.");
+    }
     payment.referenceNumber = referenceNumber;
   } else {
-    throw new Error("Reference number is required for paid status.");
+    if (referenceNumber) {
+      throw new Error("To add a reference number, the status should be paid.");
+    }
   }
-} else {
-  if (!referenceNumber ===!"paid") {
-    throw new Error("to add referance number status should be paid");
-  } // No need to throw an error if referenceNumber is not provided for non-paid status
-}
+
   payment.reason = reason || payment.reason;
   payment.status = status;
 
- if(status){
-   payment.workflow.push(`corePaymentWorkflow/${status.toLowerCase()}`);
- }
- else{
-  if(!status){
-       throw new Error("must please add status");
+  if (!status) {
+    throw new Error("Please add a status.");
   }
 
- }
+  const updatedWorkflow = payment.workflow.concat(
+    `corePaymentWorkflow/${status.toLowerCase()}`
+  );
 
   await Payments.updateOne(
     { _id },
@@ -43,12 +45,12 @@ if (status === "paid") {
         referenceNumber: referenceNumber || payment.referenceNumber,
         reason: reason || payment.reason,
         status: status,
-        workflow: payment.workflow.concat(
-          `corePaymentWorkflow/$${status.toLowerCase()}`
-        ),
+        workflow: updatedWorkflow,
       },
     }
   );
+
+  payment.workflow = updatedWorkflow;
 
   return payment;
 }

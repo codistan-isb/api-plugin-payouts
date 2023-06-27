@@ -15,6 +15,25 @@ type Payout implements Node {
   sellerInfo:sellerInfo
   productInfo:productInfo
 }
+type PayoutResponse {
+  _id: ID!
+  totalPrice: Float
+  fee: Float
+  amount: Float
+  itemId: ID
+  productId: ID
+  orderId: ID
+  subOrderId: ID
+  sellerId: ID
+  workflow: [String!]!
+  status: PaymentStatus!
+  reason:String,
+  referenceNumber:String
+  createdAt: String
+  updatedAt: String
+  sellerInfo: sellerInfo
+  productInfo: productInfo
+}
 type productInfo{
   _id:ID
   title:String
@@ -93,8 +112,8 @@ extend type Query {
 extend type Mutation {
   updatePaymentStatus(
     _id: ID!
-    referenceNumber: Int
+    referenceNumber: String
     reason: String
     status: PaymentStatus
-  ): Payment
+  ): PayoutResponse
 }
