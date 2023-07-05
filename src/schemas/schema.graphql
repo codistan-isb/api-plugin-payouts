@@ -87,6 +87,7 @@ type getAllPaymentsEdge implements NodeEdge {
 }
 
 extend type Query {
+  sellerPaymentHistory:Payout
   getAllPayouts(
     sellerId: ID
     status: PaymentStatus
