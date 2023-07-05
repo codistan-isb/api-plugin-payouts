@@ -4,7 +4,6 @@ import orders from "./orders.js";
 import ordersByAccountId from "./ordersByAccountId.js";
 import refunds from "./refunds.js";
 import refundsByPaymentId from "./refundsByPaymentId.js";
-import getOrderShippingByAddress from "./getOrderShippingByAddress.js";
 import getAllPayouts from "./getAllPayouts.js";
 import sellerPaymentHistory from "./sellerPaymentHistory.js";
 export default {
@@ -16,5 +15,4 @@ export default {
   ordersByAccountId,
   refunds,
   refundsByPaymentId,
-  getOrderShippingByAddress
 };
