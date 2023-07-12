@@ -87,7 +87,23 @@ type getAllPaymentsEdge implements NodeEdge {
 }
 
 extend type Query {
-  sellerPaymentHistory:Payout
+  sellerPaymentHistory( sellerId: ID!   after: ConnectionCursor
+
+    "Return only results that come before this cursor. Use this with `last` to specify the number of results to return."
+    before: ConnectionCursor
+
+    "Return at most this many results. This parameter may be used with either `after` or `offset` parameters."
+    first: ConnectionLimitInt
+
+    "Return at most this many results. This parameter may be used with the `before` parameter."
+    last: ConnectionLimitInt
+
+    "Return only results that come after the Nth result. This parameter may be used with the `first` parameter."
+    offset: Int
+
+    "Return results sorted in this order"
+    sortOrder: SortOrder = desc
+ shopId: ID!):getAllPaymentsConnection
   getAllPayouts(
     sellerId: ID
     status: PaymentStatus

@@ -7,14 +7,22 @@ export default async function sellerPaymentHistory(
   context,
   info
 ) {
-  const { collections, userId } = context;
+    const { collections } = context;
   const { Payments } = collections;
-  
+  const { orderId, sellerId, status, ...connectionArgs } = args;
   if (!context.user) {
     throw new ReactionError("access-denied", "Access Denied");
   }
-
-  const paymentData = await Payments.findOne({ sellerId: userId });
-  console.log("data", paymentData);
-  return paymentData;
+  const selector = {};
+ 
+  if (sellerId) {
+    selector["sellerId"] = sellerId;
+  }
+  
+  const paymentData = Payments.find(selector);
+  return getPaginatedResponse(paymentData, connectionArgs, {
+    includeHasNextPage: wasFieldRequested("pageInfo.hasNextPage", info),
+    includeHasPreviousPage: wasFieldRequested("pageInfo.hasPreviousPage", info),
+    includeTotalCount: wasFieldRequested("totalCount", info),
+  });
 }

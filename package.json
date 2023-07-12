@@ -2,7 +2,7 @@
   "name": "@codistan-isb/api-plugin-payouts",
   "description": "Orders plugin for the Reaction API",
 
-  "version": "1.0.4-development",
+  "version": "1.0.5-development",
 
   "main": "index.js",
   "type": "module",
