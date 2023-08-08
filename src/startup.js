@@ -1,19 +1,28 @@
 import Random from "@reactioncommerce/random";
 import accounting from "accounting-js";
+import calculateSellerDiscount from "./util/calculateSellerDiscount.js";
 const completeOrderStatus = "coreOrderWorkflow/completed";
 const completeOrderItemStatus = "coreOrderItemWorkflow/completed";
 
-async function createPayment(context, order,itemId, sellerId, status) {
-
+async function createPayment(context, order, itemId, sellerId, status) {
   const { appEvents, collections } = context;
-  const { SubOrders, Payments } = collections;
-  const PaymentExist = await Payments.findOne({itemId:itemId,orderId:order._id,sellerId:sellerId});
-  if(PaymentExist){
+  const { SubOrders, Payments, users } = collections;
+  const PaymentExist = await Payments.findOne({
+    itemId: itemId,
+    orderId: order._id,
+    sellerId: sellerId,
+  });
+
+  if (PaymentExist) {
     console.log("payout already generated");
-    return ;
+    return;
   }
   console.log("generating new payout");
-  const SubOrderExist = await SubOrders.findOne({ "parentId": order?._id, itemIds: { $in: [itemId] } })
+  const SubOrderExist = await SubOrders.findOne({
+    parentId: order?._id,
+    itemIds: { $in: [itemId] },
+  });
+
   if (SubOrderExist != null) {
     let foundItem = false;
     const payOutPendingGroups = SubOrderExist.shipping.map((group) => {
@@ -23,17 +32,20 @@ async function createPayment(context, order,itemId, sellerId, status) {
       });
       const updatedGroup = { items: payOutPendingItems };
 
-
       return updatedGroup;
     });
-    payOutPendingGroups.map(group=>{
-      group.items.map(async(item)=>{
 
-        const totalPrice=item.price.amount;
-        const comission=totalPrice*0.2
-        const payoutPrice=totalPrice-comission;
-        console.log("totalPrice",totalPrice)
-        console.log("payoutPrice",payoutPrice)
+    const sellerDiscount = await calculateSellerDiscount(context, sellerId);
+
+    console.log("seller discount is in startup is", sellerDiscount);
+
+    const account = payOutPendingGroups.map((group) => {
+      group.items.map(async (item) => {
+        const totalPrice = item.price.amount;
+        const comission = totalPrice * sellerDiscount;
+        const payoutPrice = totalPrice - comission;
+        console.log("totalPrice", totalPrice);
+        console.log("payoutPrice", payoutPrice);
         const PaymentObj = {
           _id: Random.id(),
           totalPrice,
@@ -51,12 +63,9 @@ async function createPayment(context, order,itemId, sellerId, status) {
         };
 
         await Payments.insertOne(PaymentObj);
-        
-      })
-    
+      });
     });
   }
-
 }
 
 /**
@@ -67,23 +76,29 @@ async function createPayment(context, order,itemId, sellerId, status) {
  */
 export default function PaymentStartup(context) {
   try {
-    console.log("PaymentStartup")
+    console.log("PaymentStartup");
     const { appEvents, collections } = context;
     const { SubOrders, Payments } = collections;
 
+    appEvents.on(
+      "afterOrderStatusUpdate",
+      ({ order, itemId, sellerId, status }) => {
+        console.log(
+          "==================== Generating Order Payment triggered =================="
+        );
+        if (
+          status == completeOrderStatus ||
+          status == completeOrderItemStatus
+        ) {
+          console.log("initiating payout generation");
+          createPayment(context, order, itemId, sellerId, status);
+        }
 
-    appEvents.on("afterOrderStatusUpdate", ({ order, itemId, sellerId, status }) => {
-      console.log("==================== Generating Order Payment triggered ==================");
-      if (status == completeOrderStatus || status == completeOrderItemStatus) {
-        console.log("initiating payout generation");
-        createPayment(context,order, itemId, sellerId, status);
+        const orderItems = order?.shipping[0]?.items;
+        // createChildOrders(context, order)
       }
-
-      const orderItems = order?.shipping[0]?.items;
-      // createChildOrders(context, order)
-    });
-  }
-  catch (err) {
-    console.log(err)
+    );
+  } catch (err) {
+    console.log(err);
   }
 }
