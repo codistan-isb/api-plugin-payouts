@@ -23,22 +23,22 @@ export default async function register(app) {
         indexes: [
           // Create indexes. We set specific names for backwards compatibility
           // with indexes created by the aldeed:schema-index Meteor package.
-          [{ accountId: 1, shopId: 1, sellerId:1 }],
+          [{ accountId: 1, shopId: 1, sellerId: 1 }],
           [{ createdAt: -1 }, { name: "c2_createdAt" }],
           [{ email: 1 }, { name: "c2_email" }],
           [{ shopId: 1 }, { name: "c2_shopId" }],
-          [{ "workflow.status": 1 }, { name: "c2_workflow.status" }]
-        ]
-      }
+          [{ "workflow.status": 1 }, { name: "c2_workflow.status" }],
+        ],
+      },
     },
     functionsByType: {
       // getDataForOrderEmail: [getDataForOrderEmail],
       // preStartup: [preStartup],
-      startup: [startup]
+      startup: [startup],
     },
     graphQL: {
       resolvers,
-      schemas
+      schemas,
     },
     // mutations,
     queries,
