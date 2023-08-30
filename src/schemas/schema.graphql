@@ -38,10 +38,16 @@ type productInfo{
   _id:ID
   title:String
 }
+type bankDetailsPayload{
+  type:String
+  bankName:String
+  bankAccountNumber: String
+}
 type sellerInfo{
   _id:ID
+  phone: String
   name:String
-  accountdetails:[bankDetailsPayload]
+  accountDetails:bankDetailsPayload
 }
 
 type Payment {
