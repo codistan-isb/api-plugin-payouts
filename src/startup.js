@@ -57,6 +57,7 @@ async function createPayment(context, order, itemId, sellerId, status) {
           status: "created",
           workflow: ["created"],
           orderId: order._id,
+          internalOrderId:SubOrderExist?.internalOrderId,
           subOrderId: SubOrderExist._id,
           createdAt: new Date().toUTCString(),
           updatedAt: new Date().toUTCString(),

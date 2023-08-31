@@ -7,6 +7,7 @@ type Payout implements Node {
   productId: ID
   orderId: ID
   subOrderId: ID
+  internalOrderId:ID
   sellerId: ID
   workflow: [String!]!
   status: PaymentStatus!
@@ -24,7 +25,8 @@ type PayoutResponse {
   productId: ID
   orderId: ID
   subOrderId: ID
-  sellerId: ID
+  sellerId: ID  
+  internalOrderId:ID
   workflow: [String!]!
   status: PaymentStatus!
   reason:String,
