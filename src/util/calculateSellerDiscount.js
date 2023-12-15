@@ -30,16 +30,23 @@ async function validateSellerDiscountCode(context, sellerId) {
   const percentage = value / 100;
   return percentage;
 }
+async function validateSellerDuration(context, sellerId) {
+  const { Accounts, SellerDiscounts } = context.collections;
+const account = await SellerDiscounts.findOne({ sellerId: sellerId });
+ const diffInMonths = account?.duration;
+  return diffInMonths >= 1;
 
+}
 export default async function calculateSellerDiscount(context, sellerId) {
   const { users } = context.collections;
 
   const { createdAt } = await users.findOne({ _id: sellerId });
 
   //verify whether the it's been one month since user registration
-  const oneMonth = hasBeenAMonthSinceRegistration(createdAt);
+  // const oneMonth = hasBeenAMonthSinceRegistration(createdAt);
+  const oneMonth = await validateSellerDuration(context, sellerId);
   const value = await validateSellerDiscountCode(context, sellerId);
-
+console.log("oneMonth is ", oneMonth, "value is ", value)
   if (!oneMonth) {
     return value;
   } else {
