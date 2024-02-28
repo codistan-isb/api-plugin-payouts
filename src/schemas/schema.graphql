@@ -7,14 +7,15 @@ type Payout implements Node {
   productId: ID
   orderId: ID
   subOrderId: ID
-  internalOrderId:ID
+  internalOrderId: ID
   sellerId: ID
   workflow: [String!]!
   status: PaymentStatus!
   createdAt: String
   updatedAt: String
-  sellerInfo:sellerInfo
-  productInfo:productInfo
+  sellerInfo: sellerInfo
+  productInfo: productInfo
+  Date: String
 }
 type PayoutResponse {
   _id: ID!
@@ -25,31 +26,31 @@ type PayoutResponse {
   productId: ID
   orderId: ID
   subOrderId: ID
-  sellerId: ID  
-  internalOrderId:ID
+  sellerId: ID
+  internalOrderId: ID
   workflow: [String!]!
   status: PaymentStatus!
-  reason:String,
-  referenceNumber:String
+  reason: String
+  referenceNumber: String
   createdAt: String
   updatedAt: String
   sellerInfo: sellerInfo
   productInfo: productInfo
 }
-type productInfo{
-  _id:ID
-  title:String
+type productInfo {
+  _id: ID
+  title: String
 }
-type bankDetailsPayload{
-  type:String
-  bankName:String
+type bankDetailsPayload {
+  type: String
+  bankName: String
   bankAccountNumber: String
 }
-type sellerInfo{
-  _id:ID
+type sellerInfo {
+  _id: ID
   phone: String
-  name:String
-  accountDetails:bankDetailsPayload
+  name: String
+  accountDetails: bankDetailsPayload
 }
 
 type Payment {
@@ -59,7 +60,6 @@ type Payment {
   status: PaymentStatus!
   workflow: [String]
 }
-
 
 enum PaymentStatus {
   adjustments
@@ -95,7 +95,9 @@ type getAllPaymentsEdge implements NodeEdge {
 }
 
 extend type Query {
-  sellerPaymentHistory( sellerId: ID!   after: ConnectionCursor
+  sellerPaymentHistory(
+    sellerId: ID!
+    after: ConnectionCursor
 
     "Return only results that come before this cursor. Use this with `last` to specify the number of results to return."
     before: ConnectionCursor
@@ -111,7 +113,8 @@ extend type Query {
 
     "Return results sorted in this order"
     sortOrder: SortOrder = desc
- shopId: ID!):getAllPaymentsConnection
+    shopId: ID!
+  ): getAllPaymentsConnection
   getAllPayouts(
     sellerId: ID
     status: PaymentStatus
