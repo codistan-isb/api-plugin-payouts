@@ -89,7 +89,8 @@ export default function PaymentStartup(context) {
         );
         if (
           status == completeOrderStatus ||
-          status == completeOrderItemStatus
+          status == completeOrderItemStatus ||
+          status == "Completed"
         ) {
           console.log("initiating payout generation");
           createPayment(context, order, itemId, sellerId, status);
