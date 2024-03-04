@@ -6,7 +6,7 @@ const completeOrderItemStatus = "coreOrderItemWorkflow/completed";
 
 async function createPayment(context, order, itemId, sellerId, status) {
   const { appEvents, collections } = context;
-  const { SubOrders, Payments, users } = collections;
+  const { SubOrders, Payments, users,Catalog,Accounts } = collections;
   const PaymentExist = await Payments.findOne({
     itemId: itemId,
     orderId: order._id,
@@ -46,6 +46,15 @@ async function createPayment(context, order, itemId, sellerId, status) {
         const payoutPrice = totalPrice - comission;
         console.log("totalPrice", totalPrice);
         console.log("payoutPrice", payoutPrice);
+        const sellerDetails = await Accounts.findOne({
+          userId: sellerId,
+        });
+        const productDetails = await Catalog.findOne({
+          "product._id": item.productId,
+         });
+         console.log("product", productDetails);
+         console.log("productDetails",productDetails?.product?.title,productDetails?.product?.slug,productDetails?.product?.pageTitle);
+        console.log("sellerDetails", sellerDetails);
         const PaymentObj = {
           _id: Random.id(),
           totalPrice,
@@ -54,6 +63,11 @@ async function createPayment(context, order, itemId, sellerId, status) {
           itemId: item._id,
           productId: item.productId,
           sellerId: sellerId,
+          productTitle: productDetails?.product?.title,
+          productSlug: productDetails?.product?.slug,
+          sellerBankDetails: sellerDetails?.bankDetail,
+          storeName: sellerDetails?.storeName,
+          productDisplayTitle: productDetails?.product?.pageTitle,
           status: "created",
           workflow: ["created"],
           orderId: order._id,
@@ -62,7 +76,7 @@ async function createPayment(context, order, itemId, sellerId, status) {
           createdAt: new Date().toUTCString(),
           updatedAt: new Date().toUTCString(),
         };
-
+        console.log("PaymentObj", PaymentObj);
         await Payments.insertOne(PaymentObj);
       });
     });
