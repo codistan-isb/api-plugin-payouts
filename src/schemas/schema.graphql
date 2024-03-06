@@ -16,6 +16,11 @@ type Payout implements Node {
   sellerInfo: sellerInfo
   productInfo: productInfo
   Date: String
+  productTitle: String
+  productSlug: String
+  sellerBankDetails: bankDetailsPayload
+  storeName: String
+  productDisplayTitle: String
 }
 type PayoutResponse {
   _id: ID!
