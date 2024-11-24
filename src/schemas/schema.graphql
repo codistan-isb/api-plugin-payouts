@@ -55,6 +55,7 @@ type sellerInfo {
   _id: ID
   phone: String
   name: String
+  storeName: String
   accountDetails: bankDetailsPayload
 }
 
