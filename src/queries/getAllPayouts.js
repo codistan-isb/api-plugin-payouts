@@ -6,4 +6,5 @@ export default async function getAllPayouts(parnet, args, context) {
   const { Payments } = collections;
   //   console.log("called wutnhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh", Payments);
   return Payments.find();
+
 }

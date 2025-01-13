@@ -367,7 +367,7 @@ export const orderItemInputSchema = new SimpleSchema({
     type: Date,
     optional: true
   },
-  
+
   "price": Number,
   "productConfiguration": Object,
   "productConfiguration.productId": String,
@@ -691,7 +691,7 @@ export const OrderItem = new SimpleSchema({
     optional: true
   },
   "attributes.$": OrderItemAttribute,
-  "sellerId":{type:String,optional:true},
+  "sellerId": { type: String, optional: true },
   "cancelReason": {
     type: String,
     optional: true
