@@ -127,7 +127,7 @@ extend type Query {
     orderId: ID
     productId: String
     productTitle: String
-    subOrderId: String
+    internalOrderId: String
     startDate: String
     endDate: String
     searchQuery: String

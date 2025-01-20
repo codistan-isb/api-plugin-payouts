@@ -39,7 +39,7 @@ import calculateSellerDiscount from "../../util/calculateSellerDiscount.js";
 export default async function getAllPayouts(parent, args, context, info) {
   const { collections } = context;
   const { Payments } = collections;
-  const { orderId, sellerId, status, productId, subOrderId, productTitle, startDate, endDate, ...connectionArgs } = args;
+  const { orderId, sellerId, status, productId, internalOrderId, productTitle, startDate, endDate, ...connectionArgs } = args;
 
   if (!context.user) {
     throw new ReactionError("access-denied", "Access Denied");
@@ -61,8 +61,9 @@ export default async function getAllPayouts(parent, args, context, info) {
     selector["productId"] = productId;
   }
 
-  if (subOrderId) {
-    selector["subOrderId"] = subOrderId;
+  if (internalOrderId) {
+    console.log("internalOrderId", internalOrderId)
+    selector["internalOrderId"] = internalOrderId;
   }
 
   if (productTitle) {
