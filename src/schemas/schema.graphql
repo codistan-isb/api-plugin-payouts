@@ -45,6 +45,7 @@ type PayoutResponse {
 type productInfo {
   _id: ID
   title: String
+  referenceId:String
 }
 type bankDetailsPayload {
   type: String
