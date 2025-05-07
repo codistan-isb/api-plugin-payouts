@@ -6,18 +6,20 @@ const completeOrderItemStatus = "coreOrderItemWorkflow/completed";
 
 async function createPayment(context, order, itemId, sellerId, status) {
   const { appEvents, collections } = context;
-  const { SubOrders, Payments, users,Catalog,Accounts } = collections;
+  const { SubOrders, Payments, users, Catalog, Accounts, Products } = collections;
+  // console.log("createPayment", itemId, sellerId);
   const PaymentExist = await Payments.findOne({
     itemId: itemId,
     orderId: order._id,
     sellerId: sellerId,
   });
 
+  // console.log("ORDER IN THE PAYMENT CREATION", order)
   if (PaymentExist) {
     console.log("payout already generated");
     return;
   }
-  console.log("generating new payout");
+  // console.log("generating new payout");
   const SubOrderExist = await SubOrders.findOne({
     parentId: order?._id,
     itemIds: { $in: [itemId] },
@@ -41,27 +43,47 @@ async function createPayment(context, order, itemId, sellerId, status) {
 
     const account = payOutPendingGroups.map((group) => {
       group.items.map(async (item) => {
-        const totalPrice = item.price.amount;
-        const comission = totalPrice * sellerDiscount;
-        const payoutPrice = totalPrice - comission;
-        console.log("totalPrice", totalPrice);
-        console.log("payoutPrice", payoutPrice);
+        let totalPrice = item.price.amount;
+        // let commission = totalPrice * sellerDiscount;
+        // let commission = totalPrice * sellerDiscount;
+        let pickupCharges = item.pickupCharge;
+        // const payoutPrice = totalPrice - pickupCharges;
+        // console.log("totalPrice", totalPrice);
         const sellerDetails = await Accounts.findOne({
           userId: sellerId,
         });
         const productDetails = await Catalog.findOne({
           "product._id": item.productId,
-         });
-         console.log("product", productDetails);
-         console.log("productDetails",productDetails?.product?.title,productDetails?.product?.slug,productDetails?.product?.pageTitle);
-        console.log("sellerDetails", sellerDetails);
+        });
+
+        const products = await Products.findOne({
+          "_id": item.productId,
+        });
+
+        console.log("products", products.referenceId);
+
+        // const hasSpecialTag = productDetails?.product?.tagIds?.includes("sSwaEF8XvAHLx4m4F");
+        // if (hasSpecialTag) {
+        //   commission = totalPrice * 0.3; // 30% commission if tagId is present
+        // }
+
+        const hasSpecialTag = productDetails?.product?.tagIds?.includes("sSwaEF8XvAHLx4m4F");
+        const commission = hasSpecialTag ? totalPrice * 0.3 : totalPrice * 0.2; // 30% for special tag, 20% otherwise
+        console.log("commission", commission);
+        const payoutPrice = totalPrice - pickupCharges - commission;
+        // console.log("payoutPrice", payoutPrice);
+        // console.log("product", productDetails);
+        // console.log("productDetails", productDetails?.product);
+        // console.log("sellerDetails", sellerDetails);
         const PaymentObj = {
           _id: Random.id(),
           totalPrice,
-          fee: comission,
+          fee: pickupCharges,
           amount: payoutPrice,
+          commissionCharges: commission,
           itemId: item._id,
           productId: item.productId,
+          productReferenceId: products?.referenceId,
           sellerId: sellerId,
           productTitle: productDetails?.product?.title,
           productSlug: productDetails?.product?.slug,
@@ -70,11 +92,12 @@ async function createPayment(context, order, itemId, sellerId, status) {
           productDisplayTitle: productDetails?.product?.pageTitle,
           status: "created",
           workflow: ["created"],
+          referenceId: order?.referenceId,
           orderId: order._id,
-          internalOrderId:SubOrderExist?.internalOrderId,
+          internalOrderId: SubOrderExist?.internalOrderId,
           subOrderId: SubOrderExist._id,
-          createdAt: new Date().toUTCString(),
-          updatedAt: new Date().toUTCString(),
+          createdAt: new Date(),
+          updatedAt: new Date(),
         };
         console.log("PaymentObj", PaymentObj);
         await Payments.insertOne(PaymentObj);
