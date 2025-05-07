@@ -47,7 +47,7 @@ export default async function getAllPayouts(parent, args, context, info) {
 
   const selector = {};
   if (orderId) {
-    selector["orderId"] = orderId;
+    selector["referenceId"] = orderId;
   }
   if (sellerId) {
     selector["sellerId"] = sellerId;
@@ -56,7 +56,6 @@ export default async function getAllPayouts(parent, args, context, info) {
     selector["status"] = status
 
   }
-
   if (productId) {
     selector["productId"] = productId;
   }
