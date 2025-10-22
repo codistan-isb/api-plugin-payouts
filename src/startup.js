@@ -71,7 +71,7 @@ async function createPayment(context, order, itemId, sellerId, status) {
         const commission = hasSpecialTag ? totalPrice * 0.3 : totalPrice * 0.2; // 30% for special tag, 20% otherwise
         console.log("commission", commission);
         const payoutPrice = totalPrice - pickupCharges - commission;
-        // console.log("payoutPrice", payoutPrice);
+        console.log("price after  totalPrice - pickupCharges - commission >>>>> ", payoutPrice);
         // console.log("product", productDetails);
         // console.log("productDetails", productDetails?.product);
         // console.log("sellerDetails", sellerDetails);

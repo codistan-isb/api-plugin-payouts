@@ -3,6 +3,14 @@ export default async function sellerInfo(parent, args, context, info) {
   const { Accounts } = context.collections;
   const sellerinfos = await Accounts.findOne({ _id: sellerIds });
 
+  console.log("SellerInfo >>>>> ", sellerinfos);
+  
+  // Find the active bank detail from the bankDetail array
+  let activeBankDetail = null;
+  if (sellerinfos?.bankDetail && Array.isArray(sellerinfos.bankDetail)) {
+    activeBankDetail = sellerinfos.bankDetail.find(bank => bank.isActive === true);
+  }
+  
   let response = {
     phone: sellerinfos?.phoneNumber
       ? sellerinfos?.phoneNumber
@@ -18,9 +26,9 @@ export default async function sellerInfo(parent, args, context, info) {
         : sellerinfos?.storeName,
     storeName: sellerinfos?.storeName,
     accountDetails: {
-      bankName: sellerinfos?.bankDetail?.bankName,
-      bankAccountNumber: sellerinfos?.bankDetail?.bankAccountNumber,
-      bankAccountTitle: sellerinfos?.bankDetail?.bankAccountTitle
+      bankName: activeBankDetail?.bankName || null,
+      bankAccountNumber: activeBankDetail?.bankAccountNumber || null,
+      bankAccountTitle: activeBankDetail?.bankAccountTitle || null
     },
   };
   return response;
